@@ -1,5 +1,5 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-from src.d03_processing.TitleProcessor import TitleProcessor
+from src.d03_processing.title_processor import TitleProcessor
 
 
 class AgePurger(BaseEstimator, TransformerMixin):
