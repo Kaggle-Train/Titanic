@@ -11,6 +11,4 @@ def load_data(level, name):
 
     df = pd.read_csv(FILENAME, index_col=0, low_memory=False)
 
-    print('Dimension of dataset "{}": '.format(name), df.shape)
-
     return df
