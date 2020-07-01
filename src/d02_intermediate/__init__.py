@@ -1,9 +1,9 @@
 from sklearn.pipeline import Pipeline
 
 import src.d01_data as d01
-from src.d02_intermediate.AgePurger import AgePurger
-from src.d02_intermediate.CabinPurger import CabinPurger
-from src.d02_intermediate.EmbarkedPurger import EmbarkedPurger
+from src.d02_intermediate.age_purger import AgePurger
+from src.d02_intermediate.cabin_purger import CabinPurger
+from src.d02_intermediate.embarked_purger import EmbarkedPurger
 
 df = d01.load_data('01_raw', 'train')
 
