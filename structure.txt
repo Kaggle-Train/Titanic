@@ -48,7 +48,8 @@
     ├── d01_data              <- Scripts for reading and writing data etc
     │   └── load_data.py
     │
-    ├── d02_intermediate      <- Scripts to transform data from raw to intermediate
+    ├── d02_intermediate      <- Scripts to transform data from raw to intermediate. CAUTION: some transformations
+    │   │                        need processors from d03 (e.g. create a new feature used for filling NAs)
     │   └── create_int_payment_data.py
     │
     ├── d03_processing        <- Transformer classes to turn intermediate data into
