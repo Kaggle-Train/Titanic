@@ -49,7 +49,7 @@ mlp = grid_search.best_estimator_
 
 vo = VotingClassifier([('lr', lr), ('knn', knn), ('mlp', mlp)])
 param_grid = [
-    {'voting': ['soft', 'hard']}
+    {'voting': ['soft']}
     ]
 grid_search = GridSearchCV(vo, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
 grid_search.fit(X,y)
