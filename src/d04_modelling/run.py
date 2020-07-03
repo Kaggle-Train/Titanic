@@ -1,6 +1,9 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import VotingClassifier
 import src.d01_data as d01
@@ -38,6 +41,13 @@ grid_search.fit(X,y)
 d01.write_model(grid_search, '20200703_KNN')
 knn = grid_search.best_estimator_
 
+# Support Vector Machines
+svc = SVC(probability=True)
+# Decision Tree
+dt = DecisionTreeClassifier(max_depth=3)
+# Random Forest
+rf = RandomForestClassifier(max_depth=3)
+
 mlp = MLPClassifier()
 param_grid = [
     {'hidden_layer_sizes': [(10)], 'max_iter': [1000]}
@@ -47,7 +57,7 @@ grid_search.fit(X,y)
 d01.write_model(grid_search, '20200703_MLP')
 mlp = grid_search.best_estimator_
 
-vo = VotingClassifier([('lr', lr), ('knn', knn), ('mlp', mlp)])
+vo = VotingClassifier([('lr', lr), ('knn', knn), ('svc', svc), ('dt', dt), ('rf', rf), ('mlp', mlp)])
 param_grid = [
     {'voting': ['soft']}
     ]
@@ -56,7 +66,7 @@ grid_search.fit(X,y)
 d01.write_model(grid_search, '20200703_VO')
 vo = grid_search.best_estimator_
 
-models = [lr, knn, mlp, vo]
+models = [lr, knn,svc, dt, rf, mlp, vo]
 
 for model in models:
     summary = EvaluationSummary(model, X, y)
