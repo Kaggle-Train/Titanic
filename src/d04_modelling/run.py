@@ -3,14 +3,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import VotingClassifier
 import src.d01_data as d01
-import joblib
 from src.d05_evaluation.evaluation_summary import EvaluationSummary
 
-DATE = '20200701'
+DATE = '20200706'
 
 df = d01.load_data('03_processed', 'train')
 
