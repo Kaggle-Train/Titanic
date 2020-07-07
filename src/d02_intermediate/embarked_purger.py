@@ -1,5 +1,4 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-from src.d03_processing.title_processor import TitleProcessor
 
 
 class EmbarkedPurger(BaseEstimator, TransformerMixin):

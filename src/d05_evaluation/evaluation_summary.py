@@ -1,20 +1,20 @@
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
-from src.d05_evaluation.confusion_matrix import MyConfusionMatrix
-from src.d05_evaluation.roc import MyROC
+from src.d05_evaluation.confusion_matrix import ConfusionMatrix
+from src.d05_evaluation.roc import ROC
 
 
 class EvaluationSummary:
     def __init__(self, classifier, X, y):
-        self.K = 5
+        self.K = 5  # cross validation size
         self.classifier = classifier
         self.X = X
         self.y = y
         model_fit = self.classifier.fit(self.X, self.y)
         self.y_pred = model_fit.predict(X)
         self.y_pred_proba = model_fit.predict_proba(X)[::, 1]
-        
+
         self.train_accuracy = model_fit.score(self.X, self.y)
         self.scores = cross_val_score(self.classifier, self.X, self.y, cv=self.K)
 
@@ -23,11 +23,12 @@ class EvaluationSummary:
         fig.suptitle(type(self.classifier).__name__)
 
         # ROC curve
-        roc = MyROC()
+        roc = ROC()
         roc.show(self.y, self.y_pred_proba, ax1)
 
         # Confusion matrix
-        MyConfusionMatrix().show(self.classifier, self.X, self.y, ax2)
+        cfm = ConfusionMatrix()
+        cfm.show(self.classifier, self.X, self.y, ax2)
         plt.show()
 
         print('------------- BEGIN EVALUATION SUMMARY ({}) -------------'.format(type(self.classifier).__name__))

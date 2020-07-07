@@ -8,9 +8,9 @@ from sklearn.pipeline import Pipeline
 import src.d01_data as d01
 from sklearn import preprocessing
 
+
 def run(data_type):
-    
-    if (data_type == 'train'):
+    if (data_type == 'train' or data_type == 'eval'):
         df = d01.load_data('02_intermediate', 'train')
         pipeline = Pipeline([
             ('title_processor', TitleProcessor()),
@@ -20,17 +20,7 @@ def run(data_type):
             ('ticket_processor', TicketProcessor(data_type=data_type)),
             ('embarked_processor', EmbarkedProcessor())
         ])
-    if (data_type == 'eval'):
-        df = d01.load_data('02_intermediate', 'train')
-        pipeline = Pipeline([
-            ('title_processor', TitleProcessor()),
-            ('mother_child_processor', MotherChildProcessor(data_type=data_type)),
-            ('family_processor', FamilyProcessor()),
-            ('sex_processor', SexProcessor()),
-            ('ticket_processor', TicketProcessor(data_type=data_type)),
-            ('embarked_processor', EmbarkedProcessor())
-        ])
-    if (data_type == 'test'):
+    if data_type == 'test':
         df = d01.load_data('02_intermediate', 'test')
         df_eval = d01.load_data('03_processed', 'eval')
         pipeline = Pipeline([
@@ -41,20 +31,18 @@ def run(data_type):
             ('ticket_processor', TicketProcessor(data_type=data_type, data_eval=df_eval)),
             ('embarked_processor', EmbarkedProcessor())
         ])
-    
-    
 
     df = pipeline.fit_transform(df)
-    
+
     # Perform scaling after processing since numerical features are also used for transforming data
-    df.loc[:,'Age'] = preprocessing.scale(df.Age)
-    df.loc[:,'Fare'] = preprocessing.scale(df.Fare)
-    df.loc[:,'FamilySize'] = preprocessing.scale(df.FamilySize)
-    df.loc[:,'Pclass'] = preprocessing.scale(df.Pclass)
-    
+    df.loc[:, 'Age'] = preprocessing.scale(df.Age)
+    df.loc[:, 'Fare'] = preprocessing.scale(df.Fare)
+    df.loc[:, 'FamilySize'] = preprocessing.scale(df.FamilySize)
+    df.loc[:, 'Pclass'] = preprocessing.scale(df.Pclass)
+
     d01.write_data(df, '03_processed', data_type)
-    
+
     print('Dimension of dataset after processing "{}": '.format(data_type), df.shape)
     print(df.info())
-    
+
     return df

@@ -8,6 +8,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import VotingClassifier
 import src.d01_data as d01
 from src.d05_evaluation.evaluation_summary import EvaluationSummary
+from sklearn.feature_selection import SelectKBest, f_classif
+import pandas as pd
 
 DATE = '20200706'
 
@@ -17,26 +19,25 @@ df = d01.load_data('03_processed', 'train')
 df['Sex_female TicketProbability'] = df.Sex_female * df.TicketProbability
 df['Pclass Sex_female'] = df.Pclass * df.Sex_female
 
-X = df[['Age', 'Fare', 'FamilySize', 'Pclass', 'Sex_female', 'MotherChildRelation', 'Embarked_C', 'Embarked_S', 
-                  'TicketProbability', 'Cabin', 'IsRev', 'Sex_female TicketProbability', 'Pclass Sex_female']]
+X = df[['Age', 'Fare', 'FamilySize', 'Pclass', 'Sex_female', 'MotherChildRelation', 'Embarked_C', 'Embarked_S',
+        'TicketProbability', 'Cabin', 'IsRev', 'Sex_female TicketProbability', 'Pclass Sex_female']]
 y = df.Survived
 
 lr = LogisticRegression()
 param_grid = [
     {'penalty': ['none', 'l2'], 'max_iter': [1000, 5000, 9999]}
-    ]
+]
 grid_search = GridSearchCV(lr, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
-grid_search.fit(X,y)
+grid_search.fit(X, y)
 d01.write_model(grid_search, '20200703_LR')
 lr = grid_search.best_estimator_
 
-
 knn = KNeighborsClassifier()
 param_grid = [
-    {'n_neighbors': range(15,20,1)}
-    ]
+    {'n_neighbors': range(15, 20, 1)}
+]
 grid_search = GridSearchCV(knn, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
-grid_search.fit(X,y)
+grid_search.fit(X, y)
 d01.write_model(grid_search, '20200703_KNN')
 knn = grid_search.best_estimator_
 
@@ -50,24 +51,38 @@ rf = RandomForestClassifier(max_depth=3)
 mlp = MLPClassifier()
 param_grid = [
     {'hidden_layer_sizes': [(10)], 'max_iter': [1000]}
-    ]
+]
 grid_search = GridSearchCV(mlp, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
-grid_search.fit(X,y)
+grid_search.fit(X, y)
 d01.write_model(grid_search, '20200703_MLP')
 mlp = grid_search.best_estimator_
 
 vo = VotingClassifier([('lr', lr), ('knn', knn), ('svc', svc), ('dt', dt), ('rf', rf), ('mlp', mlp)])
 param_grid = [
     {'voting': ['soft']}
-    ]
+]
 grid_search = GridSearchCV(vo, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
-grid_search.fit(X,y)
+grid_search.fit(X, y)
 d01.write_model(grid_search, '20200703_VO')
 vo = grid_search.best_estimator_
 
-models = [lr, knn,svc, dt, rf, mlp, vo]
+models = [lr, knn, svc, dt, rf, mlp, vo]
 
 for model in models:
     summary = EvaluationSummary(model, X, y)
     print("Train: %0.5f,  Cross accuracy validation: %0.3f (+/- %0.3f)  {}".format(type(model).__name__) % (
         summary.train_accuracy, summary.scores.mean(), summary.scores.std() * 2))
+
+selector = SelectKBest(f_classif, k=5)
+X_new = selector.fit_transform(X, y)
+feature_cols = X.columns
+selected_features = pd.DataFrame(selector.inverse_transform(X_new),
+                                 index=X.index,
+                                 columns=feature_cols)
+selected_columns = selected_features.columns[selected_features.var() != 0]
+
+feature_importances = pd.DataFrame(rf.feature_importances_,
+                                   index=X.columns,
+                                   columns=['importance']).sort_values('importance', ascending=False)
+
+print('Finished!')
