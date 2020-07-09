@@ -13,14 +13,14 @@ class TicketProcessor(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         if (self.add_ticket_propability):
-            if(self.data_type == 'train'):
+            if (self.data_type == 'train'):
                 X = self.transform_train(X)
-            if(self.data_type == 'eval'):
+            if (self.data_type == 'eval'):
                 X = self.transform_eval(X)
-            if(self.data_type == 'test'):
+            if (self.data_type == 'test'):
                 X = self.transform_test(X)
         return X
-    
+
     def transform_train(self, X):
         X['TicketProbability'] = 0
         for index, row in X.iterrows():
@@ -35,14 +35,14 @@ class TicketProcessor(BaseEstimator, TransformerMixin):
                 X.loc[index, 'TicketProbability'] = X.Survived.mean()
 
         return X
-    
+
     def transform_eval(self, X):
         X['TicketProbability'] = np.NAN
         # data point also includes it's own label for calculating ticket probability
         X['TicketProbability'] = X['TicketProbability'].fillna(X.groupby('Ticket')['Survived'].transform('mean'))
 
         return X
-    
+
     def transform_test(self, X):
         X['TicketProbability'] = self.X_eval.Survived.mean()
         for index, row in X.iterrows():
@@ -51,4 +51,3 @@ class TicketProcessor(BaseEstimator, TransformerMixin):
                     X.loc[index, 'TicketProbability'] = row2.TicketProbability
                     break
         return X
-        

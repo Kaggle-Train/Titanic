@@ -3,7 +3,7 @@ import numpy as np
 
 
 class MotherChildProcessor:
-    def __init__(self, add_last_name=False, add_mother_child_relationship=True, data_type='train', data_eval=np.NAN):
+    def __init__(self, add_last_name=True, add_mother_child_relationship=True, data_type='train', data_eval=np.NAN):
         self.child_age_margin = 11
         self.mother_age_margin = 20
         self.add_last_name = add_last_name

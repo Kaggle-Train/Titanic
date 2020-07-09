@@ -1,3 +1,4 @@
+from src.d03_processing.general.mean_encoder import MeanEncoder
 from src.d03_processing.title_processor import TitleProcessor
 from src.d03_processing.mother_child_processor import MotherChildProcessor
 from src.d03_processing.family_processor import FamilyProcessor
@@ -18,6 +19,9 @@ def run(data_type):
             ('family_processor', FamilyProcessor()),
             ('sex_processor', SexProcessor()),
             ('ticket_processor', TicketProcessor(data_type=data_type)),
+            ('family_survived_processor',
+             MeanEncoder(add_feature=True, new_feature_name='FamilyProbability', mean_feature_name='LastName',
+                         target_name='Survived', data_type='train')),
             ('embarked_processor', EmbarkedProcessor())
         ])
     if data_type == 'test':
@@ -29,6 +33,9 @@ def run(data_type):
             ('family_processor', FamilyProcessor()),
             ('sex_processor', SexProcessor()),
             ('ticket_processor', TicketProcessor(data_type=data_type, data_eval=df_eval)),
+            ('family_survived_processor',
+             MeanEncoder(add_feature=True, new_feature_name='FamilyProbability', mean_feature_name='LastName',
+                         target_name='Survived', data_type='train', data_eval=df_eval)),
             ('embarked_processor', EmbarkedProcessor())
         ])
 
@@ -46,3 +53,6 @@ def run(data_type):
     print(df.info())
 
     return df
+
+
+run('train')

@@ -29,7 +29,7 @@ param_grid = [
 ]
 grid_search = GridSearchCV(lr, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
 grid_search.fit(X, y)
-d01.write_model(grid_search, '20200703_LR')
+d01.write_model(grid_search, DATE + '_LR')
 lr = grid_search.best_estimator_
 
 knn = KNeighborsClassifier()
@@ -38,7 +38,7 @@ param_grid = [
 ]
 grid_search = GridSearchCV(knn, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
 grid_search.fit(X, y)
-d01.write_model(grid_search, '20200703_KNN')
+d01.write_model(grid_search, DATE + '_KNN')
 knn = grid_search.best_estimator_
 
 # Support Vector Machines
@@ -54,7 +54,7 @@ param_grid = [
 ]
 grid_search = GridSearchCV(mlp, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
 grid_search.fit(X, y)
-d01.write_model(grid_search, '20200703_MLP')
+d01.write_model(grid_search, DATE + '_MLP')
 mlp = grid_search.best_estimator_
 
 vo = VotingClassifier([('lr', lr), ('knn', knn), ('svc', svc), ('dt', dt), ('rf', rf), ('mlp', mlp)])
@@ -63,7 +63,7 @@ param_grid = [
 ]
 grid_search = GridSearchCV(vo, param_grid, scoring='neg_mean_squared_error', return_train_score=True, cv=5)
 grid_search.fit(X, y)
-d01.write_model(grid_search, '20200703_VO')
+d01.write_model(grid_search, DATE + '_VO')
 vo = grid_search.best_estimator_
 
 models = [lr, knn, svc, dt, rf, mlp, vo]
