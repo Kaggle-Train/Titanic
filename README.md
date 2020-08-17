@@ -1,12 +1,10 @@
-# Project Name
+# Titanic - Kaggle Competition
 
-This repository serves as a project template for data analysis projects written
-in python.
 
-#### -- Project Status: [Active, On-Hold, Completed]
+#### -- Project Status: [On-Hold,]
 
 ## Project Intro/Objective
-The purpose of this project is ________.
+Repository for participation in Kaggle's Titanic Competition. 
 
 ### Remarks
 - All data exploration steps, are performed in notebooks using scripts, classes and 
